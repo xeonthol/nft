@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export async function scheduleMint(mintFn) {
-  // Kalau timer mati atau MINT_TIME kosong, langsung run
+  // Kalau timer OFF atau MINT_TIME kosong → langsung run
   if (process.env.SCHEDULED_MINT !== 'true' || !process.env.MINT_TIME) {
     return await mintFn();
   }
@@ -11,7 +11,6 @@ export async function scheduleMint(mintFn) {
   const target = new Date(process.env.MINT_TIME).getTime();
   const delay = target - Date.now();
   const tz = process.env.TIMEZONE || 'Asia/Jakarta';
-
   const fmt = d => d.toLocaleString('id-ID', { timeZone: tz, hour12: false });
 
   console.log(`\n🕒 [TIMER] Aktif`);
