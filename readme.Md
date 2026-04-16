@@ -1,7 +1,7 @@
 git clone
 
 ```
-https://github.com/Wawanahayy/nft
+https://github.com/xeonthol/nft
 ```
 ```
 cd nft
