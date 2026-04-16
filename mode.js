@@ -783,8 +783,8 @@ async function main() {
   rl.close();
 }
 
-// ==== Display loader (banner J.W.P.A) ====
-const DISPLAY_URL = "https://raw.githubusercontent.com/Wawanahayy/JawaPride-all.sh/refs/heads/main/display.sh";
+// ==== Display loader (banner X.E.O.N.T.H.O.L) ====
+const DISPLAY_URL = "https://raw.githubusercontent.com/xeonthol/xeonthol-display/refs/heads/main/display.sh";
 
 function runSh(cmd) {
   return new Promise((resolve, reject) => {
