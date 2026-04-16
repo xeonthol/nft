@@ -5,6 +5,7 @@ import { stdin as input, stdout as output } from "node:process";
 import { readFile } from "node:fs/promises";
 import { ethers, isAddress, ZeroAddress } from "ethers";
 import dotenv from "dotenv";
+import { scheduleMint } from './timer.js';  // ← TAMBAHAN: Import timer
 dotenv.config({ override: true });
 
 /* ========= Utils ========= */
@@ -348,9 +349,20 @@ async function main(){
   rl.close();
 }
 
-main().catch(e=>{ 
-  console.error("\n❌", e?.shortMessage || e?.message || e);
-  if (e?.reason) console.error("reason:", e.reason);
-  if (e?.data)   console.error("data:", e.data);
-  rl.close(); process.exit(1);
-});
+// ← GANTI BARIS INI:
+// main().catch(e=>{ ... });
+
+// MENJADI INI (Wrapper dengan Timer + Error Handling):
+(async () => {
+  try {
+    await scheduleMint(async () => {
+      await main();
+    });
+  } catch (e) {
+    console.error("\n❌ Fatal:", e?.shortMessage || e?.message || e);
+    if (e?.reason) console.error("reason:", e.reason);
+    if (e?.data)   console.error("data:", e.data);
+    rl.close();
+    process.exit(1);
+  }
+})();
