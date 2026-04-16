@@ -1,6 +1,7 @@
-// mint-seadrop-loop.js — ethers v6
+// mint-seadrop-loop.js — ethers v6 + TIMER
 import { ethers } from "ethers";
 import dotenv from "dotenv";
+import { scheduleMint } from './timer.js';  // ← TAMBAHAN: Import timer
 dotenv.config();
 
 function req(name) {
@@ -101,4 +102,10 @@ async function main() {
   }
 }
 
-main().catch((e) => console.error("❌ Fatal:", e));
+// ← GANTI BARIS INI:
+// main().catch((e) => console.error("❌ Fatal:", e));
+
+// MENJADI INI (Wrapper dengan Timer):
+(async () => {
+  await scheduleMint(() => main());
+})();
