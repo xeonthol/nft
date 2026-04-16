@@ -1,0 +1,15 @@
+{
+  "mainnet": [
+    "https://api.mainnet-beta.solana.com",
+    "https://rpc.ankr.com/solana"
+  ],
+  "devnet": [
+    "https://api.devnet.solana.com"
+  ],
+  "helius": [
+    "https://rpc.helius.xyz/?api-key=REPLACE_ME"
+  ],
+  "quicknode": [
+    "https://solana-mainnet.g.alchemy.com/v2/REPLACE_ME"
+  ]
+}
