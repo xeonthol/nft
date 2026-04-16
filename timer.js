@@ -1,79 +1,34 @@
 // timer.js
-require('dotenv').config();
+import dotenv from "dotenv";
+dotenv.config();
 
-/**
- * Schedule fungsi minting di waktu tertentu
- * @param {Function} mintFn - Fungsi async yang berisi logika minting
- * @param {Object} options - Konfigurasi optional
- */
-async function scheduleMint(mintFn, options = {}) {
-    const {
-        enabled = process.env.SCHEDULED_MINT === 'true',
-        mintTime = process.env.MINT_TIME,      // e.g. "2026-04-16T19:05:00+07:00"
-        timezone = process.env.TIMEZONE || 'Asia/Jakarta',
-        onCountdown = true,
-        exitAfter = true
-    } = options;
+export async function scheduleMint(mintFn) {
+  // Kalau timer mati atau MINT_TIME kosong, langsung run
+  if (process.env.SCHEDULED_MINT !== 'true' || !process.env.MINT_TIME) {
+    return await mintFn();
+  }
 
-    if (!enabled || !mintTime) {
-        console.log("⚡ Timer tidak aktif, langsung eksekusi...");
-        return await mintFn();
-    }
+  const target = new Date(process.env.MINT_TIME).getTime();
+  const delay = target - Date.now();
+  const tz = process.env.TIMEZONE || 'Asia/Jakarta';
 
-    const targetDate = new Date(mintTime);
-    const delay = targetDate.getTime() - Date.now();
+  const fmt = d => d.toLocaleString('id-ID', { timeZone: tz, hour12: false });
 
-    const fmt = (date) => date.toLocaleString('id-ID', { 
-        timeZone: timezone, 
-        weekday: 'short', 
-        year: 'numeric', 
-        month: 'short', 
-        day: 'numeric', 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit' 
-    });
-
-    console.log(`\n🕒 [SCHEDULER] Aktif`);
-    console.log(`   📅 Target: ${fmt(targetDate)} (${timezone})`);
-    console.log(`   🌐 UTC: ${targetDate.toISOString()}`);
+  console.log(`\n🕒 [TIMER] Aktif`);
+  console.log(`   🎯 Target: ${fmt(new Date(target))} (${tz})`);
+  
+  if (delay > 0) {
+    const s = Math.floor(delay / 1000);
+    console.log(`   ⏳ Tunggu: ${Math.floor(s/3600)}j ${Math.floor((s%3600)/60)}m ${s%60}d\n`);
     
-    if (delay > 0) {
-        const hrs = Math.floor(delay / 3600000);
-        const mins = Math.floor((delay % 3600000) / 60000);
-        const secs = Math.floor((delay % 60000) / 1000);
-        console.log(`   ⏳ Countdown: ${hrs}j ${mins}m ${secs}d\n`);
-        
-        if (onCountdown) {
-            // Optional: live countdown log tiap 10 detik
-            const interval = setInterval(() => {
-                const remaining = Math.max(0, new Date(mintTime).getTime() - Date.now());
-                if (remaining <= 0) { clearInterval(interval); return; }
-                const s = Math.floor(remaining / 1000);
-                process.stdout.write(`\r⏱️  Berjalan: ${Math.floor(s/60)}m ${s%60}d tersisa...`);
-            }, 10000);
-        }
-
-        return new Promise(async (resolve, reject) => {
-            setTimeout(async () => {
-                try {
-                    console.log(`\n\n🚀 [${new Date().toISOString()}] WAKTUNYA MINTING!`);
-                    await mintFn();
-                    if (exitAfter) {
-                        console.log("✅ Selesai. Exiting...");
-                        process.exit(0);
-                    }
-                    resolve();
-                } catch (err) {
-                    console.error("❌ Error saat minting:", err.message);
-                    reject(err);
-                }
-            }, delay);
-        });
-    } else {
-        console.log("⚠️ Waktu target sudah lewat, langsung eksekusi...\n");
-        return await mintFn();
-    }
+    setTimeout(async () => {
+      console.log(`\n🚀 [${new Date().toISOString()}] EXECUTE MINT!`);
+      await mintFn();
+      process.exit(0);
+    }, delay);
+  } else {
+    console.log(`   ⚠️ Waktu sudah lewat, langsung run...\n`);
+    await mintFn();
+    process.exit(0);
+  }
 }
-
-module.exports = { scheduleMint };
