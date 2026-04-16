@@ -7,6 +7,7 @@
 
 import { ethers } from "ethers";
 import dotenv from "dotenv";
+import { scheduleMint } from './timer.js';  // ← TAMBAHAN: Import timer
 dotenv.config({ override: true });
 
 
@@ -126,13 +127,23 @@ async function main(){
   await sendTx(provider, wallet, quote);
 }
 
-main().catch((e)=>{
-  console.error("❌", e?.message || e);
-  if(String(e).includes("invalid csrf")){
-    console.error("Tip: perbarui BLEVER_XCSRF + cookie (_csrfSecret; blever) dari POST drops.mint terbaru.");
+// ← GANTI BARIS INI:
+// main().catch((e)=>{ ... });
+
+// MENJADI INI (Wrapper dengan Timer + Error Handling):
+(async () => {
+  try {
+    await scheduleMint(async () => {
+      await main();
+    });
+  } catch (e) {
+    console.error("❌ Fatal:", e?.message || e);
+    if(String(e).includes("invalid csrf")){
+      console.error("Tip: perbarui BLEVER_XCSRF + cookie (_csrfSecret; blever) dari POST drops.mint terbaru.");
+    }
+    if(String(e).includes("Wrong mac prefix")){
+      console.error("Tip: cookie 'blever' invalid/kadaluarsa. Copy ulang dari Request Headers (harus mulai 'Fe26.2*…').");
+    }
+    process.exit(1);
   }
-  if(String(e).includes("Wrong mac prefix")){
-    console.error("Tip: cookie 'blever' invalid/kadaluarsa. Copy ulang dari Request Headers (harus mulai 'Fe26.2*…').");
-  }
-  process.exit(1);
-});
+})();
