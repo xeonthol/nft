@@ -38,6 +38,11 @@ FEE_RECIPIENT=0x0000a26b00c1F0DF003000390027140000fAa719
 QTY=1
 MINT_PRICE_ETH=0
 
+# === SCHEDULER ===
+SCHEDULED_MINT=true                          # true = aktifkan timer, false = langsung run
+MINT_TIME=2026-04-16T19:05:00+07:00         # Format ISO 8601 (JANGAN hapus huruf 'T')
+TIMEZONE=Asia/Jakarta                        # Cuma untuk tampilan log
+
 #DELAY
 DELAY_SEC=0
 JITTER_SEC=0
