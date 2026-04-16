@@ -1,0 +1,13 @@
+{
+  "eth": ["https://eth.drpc.org"],
+  "arb": ["https://arbitrum-one-rpc.publicnode.com"],
+  "base": ["https://base.llamarpc.com"],
+  "op": ["https://mainnet.optimism.io"],
+  "poly": ["https://1rpc.io/matic"],
+  "abs": ["https://api.mainnet.abs.xyz"],
+  "avax": ["https://1rpc.io/avax/c"],
+  "hl": ["https://rpc.hyperliquid.xyz/evm"],
+  "bera": ["https://berachain-rpc.publicnode.com"],
+  "bsc": ["https://bsc.drpc.org"],
+  "ape": ["https://apechain.drpc.org"]
+}

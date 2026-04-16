@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "@metaplex-foundation/mpl-candy-machine": "^6.1.0",
+    "@metaplex-foundation/mpl-token-metadata": "^3.4.0",
+    "@metaplex-foundation/umi": "^1.2.0",
+    "@metaplex-foundation/umi-bundle-defaults": "^1.2.0",
+    "bs58": "^6.0.0",
+    "dotenv": "^17.2.1",
+    "ethers": "^6.15.0"
+  },
+  "name": "nft",
+  "description": "git clone",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "me.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
