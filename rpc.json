@@ -1,7 +1,7 @@
 {
   "eth": ["https://eth.drpc.org"],
   "arb": ["https://arbitrum-one-rpc.publicnode.com"],
-  "base": ["https://base.llamarpc.com"],
+  "base": ["https://base.drpc.org", "https://mainnet.base.org", "https://base-rpc.publicnode.com", "https://base.llamarpc.com"],
   "op": ["https://mainnet.optimism.io"],
   "poly": ["https://1rpc.io/matic"],
   "abs": ["https://api.mainnet.abs.xyz"],
